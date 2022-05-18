@@ -1,0 +1,45 @@
+/*
+FILE SYSTEM 32 LAYOUT NOTES
+
+FAT file systems volume has 4 regions in this order: 
+    0 - Reserved Region
+    1 - FAT Region
+    2 - Root Dir Region (doesnt exist on FAT32 volumes)
+    3 - File & Directory Data Region
+
+0th block has BootSector and BPB sector. Contains Volume ID and Reserved Sectors.
+
+FAT #1 starts at BPB_RsvdSecCnt*BPB_BytesPerSec
+Each Fat has one 32 bit word for every cluster. Each entry is logical block of next block in file.
+There are two FATs, for redundancy if one were to fail.
+
+Clusters hold the files and directories.
+
+Root Directory is at the first cluster.
+Root Directory contains 16 32-byte records:
+    Field               Offset  Bytes
+    Short file name     0x00    11 Bytes
+    Attribute Byte      0x0B    8 bits
+    First Cluster High  0x14    16 bits
+    First Cluster Low   0x1A    16 bits
+    File Size           0x1C    32 bits
+
+First char of file name:
+    0x00 - filename never has been used.
+    0xe5 - file name used, but file deleted.
+    0x05 - first char is actually 0xe5.
+    0x2e - directory
+
+File attributes:
+    0x01 - indicates file is read only
+    0x02 - is hidden file
+    0x04 - system file, hidden as well.
+    0x08 - special entry, containing disk volume label
+    0x10 - entry describes sub dir
+    0x20 - archive flag
+    0x40 - not used - must set to 0
+    0x80 - not used - must set to 0
+    
+    Only show is attribute 0x01, 0x10, 0x20.
+
+*/
